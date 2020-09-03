@@ -21,7 +21,8 @@ class HashTable:
     """
 
     def __init__(self, capacity):
-        # Your code here
+        self.capacity = capacity
+        self.array = [None] * capacity
 
 
     def get_num_slots(self):
@@ -34,7 +35,7 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        return(len(self.array))
 
 
     def get_load_factor(self):
@@ -52,8 +53,16 @@ class HashTable:
 
         Implement this, and/or DJB2.
         """
+        hash_key = 14695981039346656037
+        fnv_prime = 1099511628211  
+        word = str(key)
+        utf_bytes = word.encode()
 
-        # Your code here
+        for byte in utf_bytes:
+            hash_key = hash_key * fnv_prime * byte
+        
+        return hash_key
+
 
 
     def djb2(self, key):
@@ -62,7 +71,14 @@ class HashTable:
 
         Implement this, and/or FNV-1.
         """
-        # Your code here
+        hash = 5381
+        word = str(key)
+        utf_bytes = word.encode()
+
+        for byte in utf_bytes:
+            hash += (hash * 33 + byte)
+
+        return hash
 
 
     def hash_index(self, key):
@@ -81,7 +97,9 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        hash_num = self.djb2(key)
+        index = self.hash_index(hash_num)
+        self.array[index] = value
 
 
     def delete(self, key):
@@ -92,7 +110,9 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        hash_num = self.djb2(key)
+        index = self.hash_index(hash_num)
+        del self.array[index]
 
 
     def get(self, key):
@@ -103,7 +123,9 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        hash_num = self.djb2(key)
+        index = self.hash_index(hash_num)
+        return self.array[index]
 
 
     def resize(self, new_capacity):
