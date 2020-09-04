@@ -56,10 +56,10 @@ class HashTable:
         hash_key = 14695981039346656037
         fnv_prime = 1099511628211  
         word = str(key)
-        utf_bytes = word.encode()
+        key_bytes = word.encode()
 
-        for byte in utf_bytes:
-            hash_key = hash_key * fnv_prime * byte
+        for byte in key_bytes:
+            hash_key = (hash_key * fnv_prime) ^ byte
         
         return hash_key
 
@@ -73,10 +73,10 @@ class HashTable:
         """
         hash = 5381
         word = str(key)
-        utf_bytes = word.encode()
+        key_bytes = word.encode()
 
-        for byte in utf_bytes:
-            hash += (hash * 33 + byte)
+        for byte in key_bytes:
+            hash = (hash * 33 + hash + byte)
 
         return hash
 
@@ -97,8 +97,7 @@ class HashTable:
 
         Implement this.
         """
-        hash_num = self.djb2(key)
-        index = self.hash_index(hash_num)
+        index = self.hash_index(key)
         self.array[index] = value
 
 
@@ -110,8 +109,7 @@ class HashTable:
 
         Implement this.
         """
-        hash_num = self.djb2(key)
-        index = self.hash_index(hash_num)
+        index = self.hash_index(key)
         del self.array[index]
 
 
@@ -123,8 +121,7 @@ class HashTable:
 
         Implement this.
         """
-        hash_num = self.djb2(key)
-        index = self.hash_index(hash_num)
+        index = self.hash_index(key)
         return self.array[index]
 
 
