@@ -108,8 +108,13 @@ class HashTable:
         else:
             node = self.array[index]
             while node.next is not None:
+                if node.key == key:
+                    node.value = value
                 node = node.next
-            node.next = new_node
+            if node.key == key:
+                node.value = value
+            else:
+                node.next = new_node
 
 
     def delete(self, key):
@@ -125,7 +130,7 @@ class HashTable:
         if self.array[index] is None:
             return None
         elif self.array[index].next is None:
-            del self.array[index]
+            self.array[index] = None
         else:
             node = self.array[index]
             prev_node = None
@@ -133,10 +138,12 @@ class HashTable:
                 prev_node = node
                 node = node.next
             if node.next is None:
-                del node
+                node = None
+            elif prev_node is None:
+                self.array[index] = node.next
             else:
                 prev_node.next = node.next
-                del node
+                node = None
             
 
 
@@ -153,10 +160,13 @@ class HashTable:
         if self.array[index] is None:
             return None
         elif self.array[index].next is None:
-            return self.array[index].value
+            if self.array[index].key == key:
+                return self.array[index].value
+            else:
+                return None
         else:
             node = self.array[index]
-            while node.key is not key:
+            while node.key != key:
                 if node.next is None:
                     return None
                 node = node.next
