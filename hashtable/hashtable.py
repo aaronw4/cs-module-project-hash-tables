@@ -21,8 +21,11 @@ class HashTable:
     """
 
     def __init__(self, capacity):
-        self.capacity = capacity
         self.array = [None] * capacity
+        if capacity < MIN_CAPACITY:
+            self.capacity = MIN_CAPACITY
+        else:
+            self.capacity = capacity
 
 
     def get_num_slots(self):
@@ -98,7 +101,15 @@ class HashTable:
         Implement this.
         """
         index = self.hash_index(key)
-        self.array[index] = value
+        new_node = HashTableEntry(key, value)
+
+        if self.array[index] is None:
+            self.array[index] = new_node
+        else:
+            node = self.array[index]
+            while node.next is not None:
+                node = node.next
+            node.next = new_node
 
 
     def delete(self, key):
@@ -110,7 +121,23 @@ class HashTable:
         Implement this.
         """
         index = self.hash_index(key)
-        del self.array[index]
+
+        if self.array[index] is None:
+            return None
+        elif self.array[index].next is None:
+            del self.array[index]
+        else:
+            node = self.array[index]
+            prev_node = None
+            while node.key is not key:
+                prev_node = node
+                node = node.next
+            if node.next is None:
+                del node
+            else:
+                prev_node.next = node.next
+                del node
+            
 
 
     def get(self, key):
@@ -122,7 +149,18 @@ class HashTable:
         Implement this.
         """
         index = self.hash_index(key)
-        return self.array[index]
+
+        if self.array[index] is None:
+            return None
+        elif self.array[index].next is None:
+            return self.array[index].value
+        else:
+            node = self.array[index]
+            while node.key is not key:
+                if node.next is None:
+                    return None
+                node = node.next
+            return node.value
 
 
     def resize(self, new_capacity):
