@@ -119,6 +119,32 @@ class HashTable:
                 node.next = new_node
                 self.node_count += 1
 
+    def put_resize(self, key, value, array):
+        """
+        Store the value with the given key.
+
+        Hash collisions should be handled with Linked List Chaining.
+
+        Implement this.
+        """
+        index = self.hash_index(key)
+        new_node = HashTableEntry(key, value)
+
+        if array[index] is None:
+            array[index] = new_node
+            self.node_count += 1
+        else:
+            node = array[index]
+            while node.next is not None:
+                if node.key == key:
+                    node.value = value
+                node = node.next
+            if node.key == key:
+                node.value = value
+            else:
+                node.next = new_node
+                self.node_count += 1
+
 
     def delete(self, key):
         """
@@ -143,6 +169,7 @@ class HashTable:
                 node = node.next
             if node.next is None:
                 node = None
+                prev_node.next = None
                 self.node_count -= 1
             elif prev_node is None:
                 self.array[index] = node.next
@@ -186,8 +213,22 @@ class HashTable:
         rehashes all key/value pairs.
 
         Implement this.
-        """
-        # Your code here
+                """
+        new_array = [None] * new_capacity
+        array = self.array
+
+        for index in range(len(array)):
+            if array[index] is None:
+                pass
+            node = array[index]
+            while node.next is not None:
+                key = node.key
+                value = node.value
+                self.put_resize(key, value, new_array)
+                node = node.next
+            self.put_resize(node.key, node.value, new_array)
+        
+        self.array = new_array
 
 
 
