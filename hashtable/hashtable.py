@@ -21,8 +21,12 @@ class HashTable:
     """
 
     def __init__(self, capacity):
-        self.capacity = capacity
         self.array = [None] * capacity
+        self.node_count = 0
+        if capacity < MIN_CAPACITY:
+            self.capacity = MIN_CAPACITY
+        else:
+            self.capacity = capacity
 
 
     def get_num_slots(self):
@@ -44,7 +48,7 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        return(self.node_count/len(self.capacity))
 
 
     def fnv1(self, key):
@@ -98,7 +102,48 @@ class HashTable:
         Implement this.
         """
         index = self.hash_index(key)
-        self.array[index] = value
+        new_node = HashTableEntry(key, value)
+
+        if self.array[index] is None:
+            self.array[index] = new_node
+            self.node_count += 1
+        else:
+            node = self.array[index]
+            while node.next is not None:
+                if node.key == key:
+                    node.value = value
+                node = node.next
+            if node.key == key:
+                node.value = value
+            else:
+                node.next = new_node
+                self.node_count += 1
+
+    def put_resize(self, key, value, array):
+        """
+        Store the value with the given key.
+
+        Hash collisions should be handled with Linked List Chaining.
+
+        Implement this.
+        """
+        index = self.hash_index(key)
+        new_node = HashTableEntry(key, value)
+
+        if array[index] is None:
+            array[index] = new_node
+            self.node_count += 1
+        else:
+            node = array[index]
+            while node.next is not None:
+                if node.key == key:
+                    node.value = value
+                node = node.next
+            if node.key == key:
+                node.value = value
+            else:
+                node.next = new_node
+                self.node_count += 1
 
 
     def delete(self, key):
@@ -110,7 +155,30 @@ class HashTable:
         Implement this.
         """
         index = self.hash_index(key)
-        del self.array[index]
+
+        if self.array[index] is None:
+            return None
+        elif self.array[index].next is None:
+            self.array[index] = None
+            self.node_count -= 1
+        else:
+            node = self.array[index]
+            prev_node = None
+            while node.key is not key:
+                prev_node = node
+                node = node.next
+            if node.next is None:
+                node = None
+                prev_node.next = None
+                self.node_count -= 1
+            elif prev_node is None:
+                self.array[index] = node.next
+                self.node_count -= 1
+            else:
+                prev_node.next = node.next
+                node = None
+                self.node_count -= 1
+            
 
 
     def get(self, key):
@@ -122,7 +190,21 @@ class HashTable:
         Implement this.
         """
         index = self.hash_index(key)
-        return self.array[index]
+
+        if self.array[index] is None:
+            return None
+        elif self.array[index].next is None:
+            if self.array[index].key == key:
+                return self.array[index].value
+            else:
+                return None
+        else:
+            node = self.array[index]
+            while node.key != key:
+                if node.next is None:
+                    return None
+                node = node.next
+            return node.value
 
 
     def resize(self, new_capacity):
@@ -131,8 +213,22 @@ class HashTable:
         rehashes all key/value pairs.
 
         Implement this.
-        """
-        # Your code here
+                """
+        new_array = [None] * new_capacity
+        array = self.array
+
+        for index in range(len(array)):
+            if array[index] is None:
+                pass
+            node = array[index]
+            while node.next is not None:
+                key = node.key
+                value = node.value
+                self.put_resize(key, value, new_array)
+                node = node.next
+            self.put_resize(node.key, node.value, new_array)
+        
+        self.array = new_array
 
 
 
