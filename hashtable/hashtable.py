@@ -22,6 +22,7 @@ class HashTable:
 
     def __init__(self, capacity):
         self.array = [None] * capacity
+        self.node_count = 0
         if capacity < MIN_CAPACITY:
             self.capacity = MIN_CAPACITY
         else:
@@ -47,7 +48,7 @@ class HashTable:
 
         Implement this.
         """
-        # Your code here
+        return(self.node_count/len(self.capacity))
 
 
     def fnv1(self, key):
@@ -105,6 +106,7 @@ class HashTable:
 
         if self.array[index] is None:
             self.array[index] = new_node
+            self.node_count += 1
         else:
             node = self.array[index]
             while node.next is not None:
@@ -115,6 +117,7 @@ class HashTable:
                 node.value = value
             else:
                 node.next = new_node
+                self.node_count += 1
 
 
     def delete(self, key):
@@ -131,6 +134,7 @@ class HashTable:
             return None
         elif self.array[index].next is None:
             self.array[index] = None
+            self.node_count -= 1
         else:
             node = self.array[index]
             prev_node = None
@@ -139,11 +143,14 @@ class HashTable:
                 node = node.next
             if node.next is None:
                 node = None
+                self.node_count -= 1
             elif prev_node is None:
                 self.array[index] = node.next
+                self.node_count -= 1
             else:
                 prev_node.next = node.next
                 node = None
+                self.node_count -= 1
             
 
 
