@@ -1,5 +1,23 @@
 def word_count(s):
-    # Your code here
+    bad_chars = [';', ':', '&', "*", '"', ',', '.', '-', '+', '=', '/', "\\", '|', '[', ']', '{', '}', '(', ')', '^'] 
+    
+    for i in bad_chars:
+        s = s.replace(i, '')
+        s = s.lower()
+    
+    array = s.split()
+    
+    dic = {}
+
+    for i in array:
+        if i not in dic.keys():
+            dic[i] = 1
+        else:
+            number = dic[i]
+            number += 1
+            dic[i] = number
+    print(dic)
+    return dic
 
 
 
