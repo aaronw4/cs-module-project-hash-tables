@@ -15,7 +15,7 @@ def slowfun(x, y, cache={}):
     Rewrite slowfun_too_slow() in here so that the program produces the same
     output, but completes quickly instead of taking ages to run.
     """
-    index = (x + (y/100))*100
+    index = (x,y)
 
     if index in cache:
         return cache[index]
