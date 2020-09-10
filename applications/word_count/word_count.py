@@ -16,7 +16,6 @@ def word_count(s):
             number = dic[i]
             number += 1
             dic[i] = number
-    print(dic)
     return dic
 
 
