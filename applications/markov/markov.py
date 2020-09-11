@@ -30,6 +30,9 @@ for i in range(5):
     while word[-1] not in endings:
         word = random.choice(word_dict[word])
         sentence_list.append(word)
+        if len(word) > 1:
+            if word[-2] in endings:
+                break
 
     sentence = ' '.join(sentence_list)
     print(sentence)
